@@ -44,11 +44,12 @@ app.get("/add-medicine",async (req,res)=>{
                     wsi_Q:30,
                 }
             },
-        ])
+        ]);
+         res.send("Data added");
     } catch (error) {
         console.log("err",error);
     }
-    res.send("Data added");
+   
 })
 
 app.get("/medicine",async(req,res)=>{
