@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 const Medicine  = require("./models/medicine.js");
 const app = express();
 const PORT = process.env.PORT || 3000;
+const cors = require("cors");
+
+app.use(cors());
 
 
 const connectDB = async ()=>{
