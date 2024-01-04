@@ -1,19 +1,22 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-
+const bodyParser = require("body-parser");
 const Medicine  = require("./models/medicine.js");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 
 const connectDB = async ()=>{
     try{
         const conn = await mongoose.connect(process.env.MONGO_URI);
-        console.log("Mongo connect at ",conn);
     }catch (error){
         console.log(error);
         process.exit(1);
@@ -24,40 +27,37 @@ app.get("/",(req,res)=>{
     res.send({medicine:'Medicine'})
 })
 
-app.get("/add-medicine",async (req,res)=>{
+app.post("/addMedicine",async (req,res)=>{
     try {
-        await Medicine.insertMany([
-            {
-                name:"Arnica Montana",
-                quantity:{
-                    sbl_30:30,
-                    sbl_200:30,
-                    sbl_1M:30,
-                    sbl_Q:30,
-                    wsi_Q:30,
-                }
-            },
-            {
-                name:"Rhus Tox",
-                quantity:{
-                    sbl_30:30,
-                    sbl_200:30,
-                    sbl_1M:30,
-                    sbl_Q:30,
-                    wsi_Q:30,
-                }
-            },
-        ]);
+        console.log(req.body);
+        const data = req.body.medicList;
+        await Medicine.insertMany(data);
          res.send("Data added");
     } catch (error) {
+        res.send("Error Caused")
         console.log("err",error);
     }
    
 })
 
-app.get("/medicine",async(req,res)=>{
+app.get("/getStockDetail",async(req,res)=>{
     const medic = await Medicine.find();
     medic ? res.json(medic) : res.send("Wrong acces");
+})
+
+app.put("/updateStock",async(req,res)=>{
+    try {
+        const data = req.body;
+              await Medicine.findByIdAndUpdate(data._id,data);
+    //    await data.forEach((e)=>{
+    //     console.log(e);
+    //     })
+        res.send("Data updated")
+
+    } catch (error) {
+        console.log(error);
+        res.send("Data Erorr")
+    }
 })
 
 connectDB().then(()=>{
