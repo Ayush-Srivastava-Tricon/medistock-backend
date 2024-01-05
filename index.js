@@ -61,6 +61,21 @@ app.put("/updateStock", async (req, res) => {
     }
 })
 
+app.post("/login",async(req,res)=>{
+    try {
+        const data = req.body;
+        if(data.password === "123"){
+            res.send(success_status);
+        } else{
+            res.send(error_status);
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.send(error_status);
+    }
+})
+
 connectDB().then(() => {
     app.listen(PORT, () => console.log("Connected and listeing ", PORT));
 })
